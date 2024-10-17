@@ -10,7 +10,6 @@ def main():
     for token in scanner.tokens:
         print(token)
     parser = Parser(scanner.tokens)
-    parser.parse()
     
 
 if __name__ == "__main__":

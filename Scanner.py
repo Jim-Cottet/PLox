@@ -1,11 +1,13 @@
 from Token import Token
 from TokenType import TokenType
+from KeywordDic import keywords
 
 class Scanner:
     
     def __init__(self):
         self.line_number = 0;
         self.current = 0;
+        self.start = 0;
         self.tokens = [];
         
     def start_scanner(self, file):
@@ -23,18 +25,37 @@ class Scanner:
         
     def analyse_the_line(self, line):
         self.current_line = line;
-        for char in self.current_line:
+        while self.current < len(self.current_line) - 1:
             self.current += 1;
-            self.evaluate_char(char);
+            self.evaluate_char(self.current_line[self.current]);
         
     def get_chars_from_line(self, line) -> list:
         chars = list(line);
         return chars;
     
+    def string_handling(self) -> str :
+        while self.current < (len(self.current_line) - 1) and self.current_line[self.current + 1] != '"':
+            self.current += 1;
+        self.current += 1;
+        return ''.join(self.current_line[self.start:self.current]);
+    
+    def identifier_handling(self) -> Token :
+        while self.current < (len(self.current_line) - 1) and self.current_line[self.current + 1] != ' ':
+            self.current += 1;
+        result = ''.join(self.current_line[self.start:self.current + 1]);
+        new_token = Token(TokenType.IDENTIFIER, result, self.line_number);
+        if result in keywords:
+            new_token.type = keywords[result];
+            return new_token;
+        return new_token;
+    
+    def number_handling(self):
+        pass
+    
     # We need a method to check if we are in the end of a line or not
     
     def match(self, expected):
-        if self.current_line[self.current + 1] != expected:
+        if self.current < (len(self.current_line) - 1) and self.current_line[self.current + 1] != expected:
             return False;
         return True;
 
@@ -95,4 +116,31 @@ class Scanner:
                 return
             self.add_token_to_token_list((TokenType.GREATER, '>', self.line_number));
             return
+        if char == '/':
+            if self.match('/'):
+                while self.current_line[self.current + 1] != '\n':
+                    self.current += 1;
+                return
+            self.add_token_to_token_list((TokenType.SLASH, '/', self.line_number));
+            return
+        if char == ' ' or char == '\r' or char == '\t':
+            self.start += self.current + 1;
+            return
+        if char == '\n':
+            self.start = 0;
+            return
+        if char == '"':
+            self.start = self.current + 1;
+            string_literal = self.string_handling();
+            self.add_token_to_token_list((TokenType.STRING, string_literal, self.line_number));
+            return
+        # "Default" cases
+        if char.isdigit():
+            self.number_handling();
+            return
+        if char.isalpha():
+            identifier = self.identifier_handling();
+            self.add_token_to_token_list((identifier.type, identifier.value, identifier.line));
+            return
+        print("Unrecognized character: " + char);
         
