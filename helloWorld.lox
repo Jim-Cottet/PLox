@@ -1,3 +1,4 @@
-var panda = "panda";
-var loulou = "youki";
-var titi = "lili";
+if (panda) {
+    var panda = "panda";
+    var num = 123
+}

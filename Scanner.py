@@ -26,8 +26,8 @@ class Scanner:
     def analyse_the_line(self, line):
         self.current_line = line;
         while self.current < len(self.current_line) - 1:
-            self.current += 1;
             self.evaluate_char(self.current_line[self.current]);
+            self.current += 1;
         
     def get_chars_from_line(self, line) -> list:
         chars = list(line);
@@ -49,8 +49,10 @@ class Scanner:
             return new_token;
         return new_token;
     
-    def number_handling(self):
-        pass
+    def number_handling(self) -> str:
+        while self.current < (len(self.current_line) - 1) and self.current_line[self.current].isdigit():
+            self.current += 1;
+        return ''.join(self.current_line[self.start:self.current]);
     
     # We need a method to check if we are in the end of a line or not
     
@@ -136,9 +138,12 @@ class Scanner:
             return
         # "Default" cases
         if char.isdigit():
+            self.start = self.current;
             self.number_handling();
+            self.add_token_to_token_list((TokenType.NUMBER, self.number_handling(), self.line_number));
             return
         if char.isalpha():
+            self.start = self.current;
             identifier = self.identifier_handling();
             self.add_token_to_token_list((identifier.type, identifier.value, identifier.line));
             return
