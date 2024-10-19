@@ -12,13 +12,16 @@ class Scanner:
         
     def start_scanner(self, file):
         lines = []
+        
         with open(file, 'r') as f:
             lines = f.readlines();
+            
         for line in lines:
             self.line_number += 1;
             self.current = 0;
             chars = self.get_chars_from_line(line);
             self.analyse_the_line(chars);
+            
         self.add_token_to_token_list((TokenType.EOF, '', self.line_number));
     
     def add_token_to_token_list(self, token):
@@ -26,6 +29,7 @@ class Scanner:
         
     def analyse_the_line(self, line):
         self.current_line = line;
+        
         while self.not_at_end():
             self.evaluate_char(self.peek());
             self.current += 1
@@ -36,41 +40,51 @@ class Scanner:
     def peek(self):
         if not self.not_at_end():
             return '\0';
+        
         return self.current_line[self.current];
     
     def peek_forward(self):
         if self.current + 1 >= len(self.current_line):
             return '\0';
+        
         return self.current_line[self.current + 1];
     
     def get_chars_from_line(self, line) -> list:
         chars = list(line);
+        
         return chars;
     
     def string_handling(self) -> str :
         while self.not_at_end() and self.peek_forward() != '"':
             self.current += 1;
+            
         self.current += 1;
+        
         return ''.join(self.current_line[self.start:self.current]);
     
     def identifier_handling(self) -> Token :
         while self.not_at_end() and self.peek_forward().isalpha():
             self.current += 1;
+            
         result = ''.join(self.current_line[self.start:self.current + 1]);
         new_token = Token(TokenType.IDENTIFIER, result, self.line_number);
+        
         if result in keywords:
             new_token.type = keywords[result];
             return new_token;
+        
         return new_token;
     
     def number_handling(self) -> str:
         while self.not_at_end and self.peek().isdigit():
             self.current += 1;
+            
         return ''.join(self.current_line[self.start:self.current]);
     
     def match(self, expected):
         if self.not_at_end() and self.peek_forward() != expected:
             return False;
+        
         return True;
 
     def evaluate_char(self, char) -> Token :
