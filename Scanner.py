@@ -19,28 +19,42 @@ class Scanner:
             self.current = 0;
             chars = self.get_chars_from_line(line);
             self.analyse_the_line(chars);
+        self.add_token_to_token_list((TokenType.EOF, '', self.line_number));
     
     def add_token_to_token_list(self, token):
         self.tokens.append(token);        
         
     def analyse_the_line(self, line):
         self.current_line = line;
-        while self.current < len(self.current_line) - 1:
-            self.evaluate_char(self.current_line[self.current]);
-            self.current += 1;
+        while self.not_at_end():
+            self.evaluate_char(self.peek());
+            self.current += 1
         
+    def not_at_end(self):
+        return self.current < len(self.current_line);
+
+    def peek(self):
+        if not self.not_at_end():
+            return '\0';
+        return self.current_line[self.current];
+    
+    def peek_forward(self):
+        if self.current + 1 >= len(self.current_line):
+            return '\0';
+        return self.current_line[self.current + 1];
+    
     def get_chars_from_line(self, line) -> list:
         chars = list(line);
         return chars;
     
     def string_handling(self) -> str :
-        while self.current < (len(self.current_line) - 1) and self.current_line[self.current + 1] != '"':
+        while self.not_at_end() and self.peek_forward() != '"':
             self.current += 1;
         self.current += 1;
         return ''.join(self.current_line[self.start:self.current]);
     
     def identifier_handling(self) -> Token :
-        while self.current < (len(self.current_line) - 1) and self.current_line[self.current + 1] != ' ':
+        while self.not_at_end() and self.peek_forward().isalpha():
             self.current += 1;
         result = ''.join(self.current_line[self.start:self.current + 1]);
         new_token = Token(TokenType.IDENTIFIER, result, self.line_number);
@@ -50,14 +64,12 @@ class Scanner:
         return new_token;
     
     def number_handling(self) -> str:
-        while self.current < (len(self.current_line) - 1) and self.current_line[self.current].isdigit():
+        while self.not_at_end and self.peek().isdigit():
             self.current += 1;
         return ''.join(self.current_line[self.start:self.current]);
     
-    # We need a method to check if we are in the end of a line or not
-    
     def match(self, expected):
-        if self.current < (len(self.current_line) - 1) and self.current_line[self.current + 1] != expected:
+        if self.not_at_end() and self.peek_forward() != expected:
             return False;
         return True;
 

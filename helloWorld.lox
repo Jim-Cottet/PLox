@@ -1,4 +1,7 @@
 if (panda) {
     var panda = "panda";
     var num = 123
+} else {
+    var panda = "loulou";
+    var num = 321
 }
