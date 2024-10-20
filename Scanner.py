@@ -13,8 +13,12 @@ class Scanner:
     def start_scanner(self, file):
         lines = []
         
-        with open(file, 'r') as f:
-            lines = f.readlines();
+        try:
+            with open(file, 'r') as f:
+                lines = f.readlines();
+                
+        except FileNotFoundError:
+            raise Exception(f"File {file} not found");
             
         for line in lines:
             self.line_number += 1;
@@ -25,7 +29,8 @@ class Scanner:
         self.add_token_to_token_list((TokenType.EOF, '', self.line_number));
     
     def add_token_to_token_list(self, token):
-        self.tokens.append(token);        
+        new_token = Token(token[0], token[1], token[2]);
+        self.tokens.append(new_token);        
         
     def analyse_the_line(self, line):
         self.current_line = line;
@@ -122,24 +127,28 @@ class Scanner:
         # Two character tokens
         if char == '!':
             if self.match('='):
+                self.current += 1;
                 self.add_token_to_token_list((TokenType.BANG_EQUAL, '!=', self.line_number));
                 return
             self.add_token_to_token_list((TokenType.BANG, '!', self.line_number));
             return
         if char == '=':
             if self.match('='):
+                self.current += 1;
                 self.add_token_to_token_list((TokenType.EQUAL_EQUAL, '==', self.line_number));
                 return
             self.add_token_to_token_list((TokenType.EQUAL, '=', self.line_number));
             return
         if char == '<':
             if self.match('='):
+                self.current += 1;
                 self.add_token_to_token_list((TokenType.LESS_EQUAL, '<=', self.line_number));
                 return
             self.add_token_to_token_list((TokenType.LESS, '<', self.line_number));
             return
         if char == '>':
             if self.match('='):
+                self.current += 1;                
                 self.add_token_to_token_list((TokenType.GREATER_EQUAL, '>=', self.line_number));
                 return
             self.add_token_to_token_list((TokenType.GREATER, '>', self.line_number));
@@ -173,5 +182,6 @@ class Scanner:
             identifier = self.identifier_handling();
             self.add_token_to_token_list((identifier.type, identifier.value, identifier.line));
             return
-        print("Unrecognized character: " + char);
+        # Error handling
+        raise Exception(f"Unexpected character '{char}' at line {self.line_number}");
         

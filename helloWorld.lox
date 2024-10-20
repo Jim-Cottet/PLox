@@ -1,7 +1,1 @@
-if (panda) {
-    var panda = "panda";
-    var num = 123
-} else {
-    var panda = "loulou";
-    var num = 321
-}
+3 + 2 - 6 * -4 + 2 - 3 == -30
