@@ -100,7 +100,7 @@ class Parser:
         
         if self.match(TokenType.LEFT_PAREN):
             expr = self.expression();
-            self.match(TokenType.RIGHT_PAREN);
+            self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
             return Expr().grouping(expr);
         
         raise Exception("Invalid Expression {} at line {}".format(self.peek().value, self.peek().line));
@@ -134,6 +134,35 @@ class Parser:
     
     def previous(self):
         return self.tokens[self.current - 1];
+    
+    def consume(self, type, message):
+        if self.check(type):
+            return self.advance();
+        
+        raise Exception(message);
+    
+    # We'll need a error function to stock the error message and the line number into a list
+    
+    # The synchronize function will be used to skip the tokens until the next statement
+    def synchronize(self):
+        self.advance();
+        
+        while not self.is_at_end():
+            if self.previous().type == TokenType.SEMICOLON:
+                return;
+            
+            if self.peek().type in [
+                TokenType.CLASS, 
+                TokenType.FUN, 
+                TokenType.VAR, 
+                TokenType.FOR, 
+                TokenType.IF, 
+                TokenType.WHILE, 
+                TokenType.PRINT, 
+                TokenType.RETURN
+                ]: return;
+            
+            self.advance();
     
     # Printing the AST
     def print_ast(self, node, indent=""):
