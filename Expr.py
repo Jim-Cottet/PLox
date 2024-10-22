@@ -7,6 +7,8 @@ class Expr:
         self.value = None;
         self.left = None;
         self.right = None;
+        self.expression = None;
+
         
     def literal(self, value) :
         self.type = TypeDef.EXPR_LITERAL;
@@ -24,4 +26,9 @@ class Expr:
         self.value = value;
         self.left = left;
         self.right = right;
+        return self;
+        
+    def grouping(self, expression) :
+        self.type = TypeDef.EXPR_GROUPING;
+        self.expression = expression;
         return self;

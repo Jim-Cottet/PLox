@@ -1,5 +1,5 @@
 from TokenType import TokenType;
-from ExprNode import Expr;
+from Expr import Expr;
 from TypeDef import TypeDef;
 
 class Parser:
@@ -103,6 +103,8 @@ class Parser:
             self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
             return Expr().grouping(expr);
         
+        return None;
+        
         raise Exception("Invalid Expression {} at line {}".format(self.peek().value, self.peek().line));
     
     # Utility Functions
@@ -180,6 +182,10 @@ class Parser:
             print(f"{indent}  Operator: {node.value.value}")
             print(f"{indent}  Right:")
             self.print_ast(node.right, indent + "    ")
+        elif node.type == TypeDef.EXPR_GROUPING:
+            print(f"{indent}Grouping:")
+            print(f"{indent}  Expression:")
+            self.print_ast(node.expression, indent + "    ")
         else:
             print(f"{indent}Unknown node type: {node.type}")
     

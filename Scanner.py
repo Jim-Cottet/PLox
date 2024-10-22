@@ -80,12 +80,15 @@ class Scanner:
         
         return new_token;
     
-    def number_handling(self) -> str:
+    def number_handling(self):
         while self.not_at_end and self.peek().isdigit():
             self.current += 1;
-            
-        return ''.join(self.current_line[self.start:self.current]);
-    
+
+        print(self.current_line[self.start:self.current]);
+        result_as_number = float(''.join(self.current_line[self.start:self.current]));
+        self.current -= 1;
+        return result_as_number;
+
     def match(self, expected):
         if self.not_at_end() and self.peek_forward() != expected:
             return False;
