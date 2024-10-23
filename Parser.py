@@ -25,6 +25,8 @@ class Parser:
         print("Display of the AST in the parser\n");
         self.print_ast(self.ast);
         
+        return self.ast;
+        
        
     #Regressive Descent Parser    
     def expression(self):
@@ -170,7 +172,7 @@ class Parser:
     def print_ast(self, node, indent=""):
         if node.type == TypeDef.EXPR_BINARY:
             print(f"{indent}Binary:")
-            print(f"{indent}  Operator: {node.value.value}")
+            print(f"{indent}  Operator: {node.operator.type}")
             print(f"{indent}  Left:")
             self.print_ast(node.left, indent + "    ")
             print(f"{indent}  Right:")
@@ -179,7 +181,7 @@ class Parser:
             print(f"{indent}Literal: {node.value}")
         elif node.type == TypeDef.EXPR_UNARY:
             print(f"{indent}Unary:")
-            print(f"{indent}  Operator: {node.value.value}")
+            print(f"{indent}  Operator: {node.operator.type}")
             print(f"{indent}  Right:")
             self.print_ast(node.right, indent + "    ")
         elif node.type == TypeDef.EXPR_GROUPING:

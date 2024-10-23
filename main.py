@@ -1,5 +1,6 @@
 from Scanner import Scanner
 from Parser import Parser
+from Interpreter import Interpreter
 
 def main():
     
@@ -10,11 +11,15 @@ def main():
 
         # Call a method from the Parser class (assuming a method named 'parse' exists)
         parser = Parser(scanner.tokens);
-        parser.parse();
+        expression = parser.parse();
+        
+        # Call the interpreter method
+        interpreter = Interpreter();
+        print("\nResult of the expression : ");
+        interpreter.interpret(expression);
         
     except Exception as e:
         print(e);
 
-    
 if __name__ == "__main__":
     main()

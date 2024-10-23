@@ -7,6 +7,7 @@ class Expr:
         self.value = None;
         self.left = None;
         self.right = None;
+        self.operator = None;
         self.expression = None;
 
         
@@ -15,16 +16,16 @@ class Expr:
         self.value = value;
         return self;
         
-    def unary(self, value, right) :
+    def unary(self, operator, right) :
         self.type = TypeDef.EXPR_UNARY;
-        self.value = value;
+        self.operator = operator;
         self.right = right;
         return self;
     
-    def binary(self, left, value, right) :
+    def binary(self, left, operator, right) :
         self.type = TypeDef.EXPR_BINARY;
-        self.value = value;
         self.left = left;
+        self.operator = operator;
         self.right = right;
         return self;
         
