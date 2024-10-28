@@ -3,31 +3,21 @@ from TokenType import TokenType;
 class Interpreter:
     
     def __init__(self):
-        self.ast = None;
+        self.stmt_list = None;
     
-    def interpret(self, expression):
-        self.ast = expression;
-        try :
-            value = self.evaluate(expression);
-            print(self.stringify(value));
-        except RuntimeError as e:
-            print(e);
+    def interpret(self, stmt_list):
+            if stmt_list == None:
+                return;
+            
+            for stmt in stmt_list:
+                self.execution(stmt);
     
+    # Evaluate the expression of a node
     def evaluate(self, node):
-        
         if node == None:
             return None
         
-        node_type_map = {
-            1: "expr_unary",
-            2: "expr_grouping",
-            3: "expr_binary",
-            4: "expr_literal",
-            # Add other mappings as needed
-        }
-        
-        node_type_str = node_type_map.get(node.type, "unknown")
-        method_name = f"visit_{node_type_str}";
+        method_name = f"visit_{node.type.name.lower()}";
         method = getattr(self, method_name, self.generic_visit);
         
         return method(node);
@@ -91,6 +81,26 @@ class Interpreter:
             return left == right;
         return None;
     
+    # Execution methods
+    def execution(self, stmt):
+        if stmt == None:
+            return None
+        
+        print(f"Executing {stmt.type}");
+        method_name = f"visit_stmt_{stmt.type.name.lower()}";
+        print(f"Method Name : {method_name}");
+        method = getattr(self, method_name, self.generic_visit);
+        
+        return method(stmt);
+    
+    def visit_stmt_print(self, stmt):
+        value = self.evaluate(stmt.expr);
+        print(self.stringify(value));
+        
+    def visit_stmt_expression(self, stmt):
+        return self.evaluate(stmt.expr);
+    
+    # Helper methods
     def is_truthy(self, value):
         if value == None:
             return False;

@@ -9,7 +9,6 @@ class Expr:
         self.right = None;
         self.operator = None;
         self.expression = None;
-
         
     def literal(self, value) :
         self.type = TypeDef.EXPR_LITERAL;

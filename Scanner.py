@@ -83,8 +83,7 @@ class Scanner:
     def number_handling(self):
         while self.not_at_end and self.peek().isdigit():
             self.current += 1;
-
-        print(self.current_line[self.start:self.current]);
+            
         result_as_number = float(''.join(self.current_line[self.start:self.current]));
         self.current -= 1;
         return result_as_number;

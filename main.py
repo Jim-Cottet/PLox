@@ -11,12 +11,12 @@ def main():
 
         # Call a method from the Parser class (assuming a method named 'parse' exists)
         parser = Parser(scanner.tokens);
-        expression = parser.parse();
+        stmt_list = parser.parse();
         
         # Call the interpreter method
         interpreter = Interpreter();
         print("\nResult of the expression : ");
-        interpreter.interpret(expression);
+        interpreter.interpret(stmt_list);
         
     except Exception as e:
         print(e);

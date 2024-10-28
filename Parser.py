@@ -1,13 +1,14 @@
 from TokenType import TokenType;
 from Expr import Expr;
 from TypeDef import TypeDef;
+from Stmt import Stmt;
 
 class Parser:
     
     def __init__(self, tokens):
         self.tokens = tokens;
         self.current = 0;
-        self.ast = None;
+        self.stmt_list = [];
         
     # Entry Function
     def parse(self):
@@ -17,24 +18,35 @@ class Parser:
             print("Type : {} Value : {} Line : {}".format(token.type, token.value, token.line));
        
         print("\n-------------------------------------------------------------------------------\n");       
-       
+        
          # Start the recursive descent parser     
-        self.ast = self.expression();
-        
-        # Display the AST
-        print("Display of the AST in the parser\n");
-        self.print_ast(self.ast);
-        
-        return self.ast;
+        while not self.is_at_end():
+            self.stmt_list.append(self.statement());
+            
+        return self.stmt_list;
         
        
     #Regressive Descent Parser    
     def expression(self):
-        
         return self.equality();
     
-    def equality(self):
+    def statement(self):
+        if self.match(TokenType.PRINT):
+            return self.print_statement();
 
+        return self.expression_statement();
+    
+    def print_statement(self):
+        value = self.expression();
+        self.consume(TokenType.SEMICOLON, "Expect ';' after value.");
+        return Stmt(TokenType.PRINT, value)
+
+    def expression_statement(self):
+        value = self.expression();
+        self.consume(TokenType.SEMICOLON, "Expect ';' after value.");
+        return Stmt("Expression", value);
+    
+    def equality(self):
         expr = self.comparison();
         
         while self.match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL):
@@ -45,7 +57,6 @@ class Parser:
         return expr;
     
     def comparison(self):
-        
         expr = self.term();
         
         while self.match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL):
@@ -56,7 +67,6 @@ class Parser:
         return expr;
     
     def term(self):
-
         expr = self.factor();
         
         while self.match(TokenType.MINUS, TokenType.PLUS):
@@ -67,7 +77,6 @@ class Parser:
         return expr;
     
     def factor(self):
-
         expr = self.unary();
         
         while self.match(TokenType.SLASH, TokenType.STAR):
@@ -78,7 +87,6 @@ class Parser:
         return expr;
     
     def unary(self):   
-
         if self.match(TokenType.BANG, TokenType.MINUS):
             operator = self.previous();
             right = self.unary();
