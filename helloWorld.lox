@@ -1,3 +1,4 @@
+var dindon = "dindon";
 print(2 + 2);
 print(35 * 3);
 print("Poulet");

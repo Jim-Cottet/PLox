@@ -21,15 +21,34 @@ class Parser:
         
          # Start the recursive descent parser     
         while not self.is_at_end():
-            self.stmt_list.append(self.statement());
+            self.stmt_list.append(self.declaration());
             
         return self.stmt_list;
+    # Declaration handling block
+    def declaration(self):
+        try:
+            if self.match(TokenType.VAR):
+                return self.var_declaration();
+            
+            return self.statement();
         
-       
-    #Regressive Descent Parser    
-    def expression(self):
-        return self.equality();
+        except Exception as e:
+            self.synchronize();
+            return None;
     
+    def var_declaration(self):
+        name = self.consume(TokenType.IDENTIFIER, "Expect variable name.");
+        print("Name : {} ".format(name.value));
+        
+        initializer = None;
+        if self.match(TokenType.EQUAL):
+            initializer = self.expression();
+        print("Initializer : {} ".format(initializer.value));
+        
+        self.consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+        return Stmt().var_stmt(TokenType.VAR, initializer, name);
+     
+    # Statement handling block   
     def statement(self):
         if self.match(TokenType.PRINT):
             return self.print_statement();
@@ -45,6 +64,10 @@ class Parser:
         value = self.expression();
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.");
         return Stmt("Expression", value);
+    
+    # Expression handling block   
+    def expression(self):
+        return self.equality();
     
     def equality(self):
         expr = self.comparison();
@@ -108,12 +131,13 @@ class Parser:
         if self.match(TokenType.NUMBER, TokenType.STRING):
             return Expr().literal(self.previous().value);
         
+        if self.match(TokenType.IDENTIFIER):
+            return Expr().variable(self.previous());
+        
         if self.match(TokenType.LEFT_PAREN):
             expr = self.expression();
             self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
             return Expr().grouping(expr);
-        
-        return None;
         
         raise Exception("Invalid Expression {} at line {}".format(self.peek().value, self.peek().line));
     
@@ -153,9 +177,7 @@ class Parser:
         
         raise Exception(message);
     
-    # We'll need a error function to stock the error message and the line number into a list
-    
-    # The synchronize function will be used to skip the tokens until the next statement
+    # The synchronize function
     def synchronize(self):
         self.advance();
         
@@ -176,31 +198,28 @@ class Parser:
             
             self.advance();
     
-    # Printing the AST
-    def print_ast(self, node, indent=""):
-        if node.type == TypeDef.EXPR_BINARY:
-            print(f"{indent}Binary:")
-            print(f"{indent}  Operator: {node.operator.type}")
-            print(f"{indent}  Left:")
-            self.print_ast(node.left, indent + "    ")
-            print(f"{indent}  Right:")
-            self.print_ast(node.right, indent + "    ")
-        elif node.type == TypeDef.EXPR_LITERAL:
-            print(f"{indent}Literal: {node.value}")
-        elif node.type == TypeDef.EXPR_UNARY:
-            print(f"{indent}Unary:")
-            print(f"{indent}  Operator: {node.operator.type}")
-            print(f"{indent}  Right:")
-            self.print_ast(node.right, indent + "    ")
-        elif node.type == TypeDef.EXPR_GROUPING:
-            print(f"{indent}Grouping:")
-            print(f"{indent}  Expression:")
-            self.print_ast(node.expression, indent + "    ")
-        else:
-            print(f"{indent}Unknown node type: {node.type}")
-    
-    
-        
+    ## Printing the AST
+    #def print_ast(self, node, indent=""):
+    #    if node.type == TypeDef.EXPR_BINARY:
+    #        print(f"{indent}Binary:")
+    #        print(f"{indent}  Operator: {node.operator.type}")
+    #        print(f"{indent}  Left:")
+    #        self.print_ast(node.left, indent + "    ")
+    #        print(f"{indent}  Right:")
+    #        self.print_ast(node.right, indent + "    ")
+    #    elif node.type == TypeDef.EXPR_LITERAL:
+    #        print(f"{indent}Literal: {node.value}")
+    #    elif node.type == TypeDef.EXPR_UNARY:
+    #        print(f"{indent}Unary:")
+    #        print(f"{indent}  Operator: {node.operator.type}")
+    #        print(f"{indent}  Right:")
+    #        self.print_ast(node.right, indent + "    ")
+    #    elif node.type == TypeDef.EXPR_GROUPING:
+    #        print(f"{indent}Grouping:")
+    #        print(f"{indent}  Expression:")
+    #        self.print_ast(node.expression, indent + "    ")
+    #    else:
+    #        print(f"{indent}Unknown node type: {node.type}")
         
         
         
