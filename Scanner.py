@@ -186,4 +186,4 @@ class Scanner:
             return
         # Error handling
         raise Exception(f"Unexpected character '{char}' at line {self.line_number}");
-        
+

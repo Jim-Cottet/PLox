@@ -21,7 +21,7 @@ class Parser:
         
          # Start the recursive descent parser     
         while not self.is_at_end():
-            self.stmt_list.append(self.declaration());
+           self.stmt_list.append(self.declaration());
             
         return self.stmt_list;
     # Declaration handling block
@@ -33,7 +33,7 @@ class Parser:
             return self.statement();
         
         except Exception as e:
-            self.synchronize();
+            #self.synchronize();
             return None;
     
     def var_declaration(self):
@@ -153,7 +153,7 @@ class Parser:
     def check(self, type):
         if self.is_at_end():
             return False;
-        
+                                                                                                                                                        
         return self.peek().type == type;
     
     def advance(self):

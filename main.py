@@ -7,7 +7,7 @@ def main():
     try:
         # Create an instance of the Parser class
         scanner = Scanner();
-        scanner.start_scanner("helloWorld.lox");
+        scanner.start_scanner("test.lox");
 
         # Call a method from the Parser class (assuming a method named 'parse' exists)
         parser = Parser(scanner.tokens);

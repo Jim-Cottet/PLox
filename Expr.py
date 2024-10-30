@@ -14,7 +14,7 @@ class Expr:
         self.type = TypeDef.EXPR_LITERAL;
         self.value = value;
         return self;
-        
+       
     def unary(self, operator, right) :
         self.type = TypeDef.EXPR_UNARY;
         self.operator = operator;
@@ -32,3 +32,4 @@ class Expr:
         self.type = TypeDef.EXPR_GROUPING;
         self.expression = expression;
         return self;
+    

@@ -5,3 +5,4 @@ class ErrorHandler:
     
     def display_error(self):
         print("Error : {} \nAt line number {}\n".format(self.message, self.line_number));
+    
