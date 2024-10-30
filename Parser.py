@@ -178,6 +178,7 @@ class Parser:
         raise Exception(message);
     
     # The synchronize function
+    #! Doesn't work as expected. Need to fix this
     def synchronize(self):
         self.advance();
         
