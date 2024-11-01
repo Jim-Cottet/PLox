@@ -4,6 +4,7 @@ class Environment:
             self.values = dict();
         
     def define(self, name, value):
+        print(f"Defining variable {name} with value {value}");
         self.values[name] = value
     
     def get(self, name) -> object:

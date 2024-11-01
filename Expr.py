@@ -33,3 +33,7 @@ class Expr:
         self.expression = expression;
         return self;
     
+    def variable(self, name) :
+        self.type = TypeDef.EXPR_VARIABLE;
+        self.name = name;
+        return self;

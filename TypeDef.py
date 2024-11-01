@@ -5,4 +5,5 @@ class TypeDef(Enum):
     EXPR_GROUPING = 2;
     EXPR_BINARY = 3;
     EXPR_LITERAL = 4;
+    EXPR_VARIABLE = 5;
 

@@ -16,6 +16,9 @@ def main():
         # Call the interpreter method
         interpreter = Interpreter();
         print("\nResult of the expression : ");
+        print("stmt_list length : ", len(stmt_list));
+        for stmt in stmt_list:
+            print("stmt : ", type(stmt));
         interpreter.interpret(stmt_list);
         
     except Exception as e:

@@ -1,16 +1,19 @@
 from TokenType import TokenType;
+from Environment import Environment;
 
 class Interpreter:
     
     def __init__(self):
         self.stmt_list = None;
+        self.environment = Environment();
     
     def interpret(self, stmt_list):
-            if stmt_list == None:
-                return;
+        self.stmt_list = stmt_list;
+        if stmt_list == None:
+            return;
             
-            for stmt in stmt_list:
-                self.execution(stmt);
+        for stmt in self.stmt_list: 
+            self.execution(stmt);
     
     # Evaluate the expression of a node
     def evaluate(self, node):
@@ -42,6 +45,8 @@ class Interpreter:
             return not self.is_truthy(right);
         return None;
     
+    def visit_expr_variable(self, node):
+        return self.environment.get(node.name);
     
     def visit_expr_binary(self, node):
         left = self.evaluate(node.left);
@@ -97,6 +102,15 @@ class Interpreter:
         value = self.evaluate(stmt.expr);
         print(self.stringify(value));
         
+    def visit_stmt_var(self, stmt):
+        value = None;
+        print(f"Var name : {stmt.name}");
+        if (stmt.initializer != None):
+            value = self.evaluate(stmt.initializer);
+        
+        self.environment.define(stmt.name, value);
+        return None;
+    
     def visit_stmt_expression(self, stmt):
         return self.evaluate(stmt.expr);
     

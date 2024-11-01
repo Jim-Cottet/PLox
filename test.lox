@@ -1,7 +1,3 @@
-print("Poulet");
-print((3 * 1) + -2 == -1);
-var panda = "Panda";
-var number = 42;
-var dolce = "O Sugar!";
-var numberTwo = 34;
-print("Poulet 2");
+var a = 1;
+var b = 2;
+print(a + b);

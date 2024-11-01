@@ -28,7 +28,9 @@ class Parser:
     def declaration(self):
         try:
             if self.match(TokenType.VAR):
-                return self.var_declaration();
+                new_var = self.var_declaration();
+                # Doesn't seem to get through this line?
+                return new_var;
             
             return self.statement();
         
@@ -36,7 +38,7 @@ class Parser:
             #self.synchronize();
             return None;
     
-    def var_declaration(self):
+    def var_declaration(self) -> Stmt:
         name = self.consume(TokenType.IDENTIFIER, "Expect variable name.");
         print("Name : {} ".format(name.value));
         
@@ -46,7 +48,7 @@ class Parser:
         print("Initializer : {} ".format(initializer.value));
         
         self.consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
-        return Stmt().var_stmt(TokenType.VAR, initializer, name);
+        return Stmt(0, TokenType.VAR, None, name.value, initializer);
      
     # Statement handling block   
     def statement(self):
@@ -58,7 +60,7 @@ class Parser:
     def print_statement(self):
         value = self.expression();
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.");
-        return Stmt(TokenType.PRINT, value)
+        return Stmt(0, TokenType.PRINT, value, None, None);
 
     def expression_statement(self):
         value = self.expression();
@@ -132,7 +134,7 @@ class Parser:
             return Expr().literal(self.previous().value);
         
         if self.match(TokenType.IDENTIFIER):
-            return Expr().variable(self.previous());
+            return Expr().variable(self.previous().value);
         
         if self.match(TokenType.LEFT_PAREN):
             expr = self.expression();
