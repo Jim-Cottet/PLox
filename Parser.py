@@ -29,7 +29,6 @@ class Parser:
         try:
             if self.match(TokenType.VAR):
                 new_var = self.var_declaration();
-                # Doesn't seem to get through this line?
                 return new_var;
             
             return self.statement();
@@ -65,7 +64,7 @@ class Parser:
     def expression_statement(self):
         value = self.expression();
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.");
-        return Stmt("Expression", value);
+        return Stmt(0, TokenType.IDENTIFIER, value, None, None);
     
     # Expression handling block   
     def expression(self):
@@ -74,14 +73,17 @@ class Parser:
     
     def assignment(self):
         expr = self.equality();
+        print("current Token : {} ".format(self.peek().type));
         if (self.match(TokenType.EQUAL)):
-            print("Assignment operator found");
-            equals = self.previous();
+            print("current Token : {} ".format(self.peek().type));
+            equals = self.previous(2);
             value = self.assignment();
-        
-            if (equals.type == TypeDef.EXPR_VARIABLE):
-                print("Assignment target is an identifier");
-                return Expr().assign(equals.name, value);
+            
+            print("Type : {} Value : {} ".format(equals.type, equals.value));
+            print("Value : {} ".format(value.value));
+            
+            if (equals.type == TokenType.IDENTIFIER):
+                return Expr().assign(equals.value, value.value);
             
             print("Error : Invalid assignment target.");
 
@@ -160,7 +162,7 @@ class Parser:
         raise Exception("Invalid Expression {} at line {}".format(self.peek().value, self.peek().line));
     
     # Utility Functions
-    def match (self, types):
+    def match (self, *types):
         for type in types:
             if self.check(type):
                 self.advance();
@@ -186,8 +188,8 @@ class Parser:
     def peek(self):
         return self.tokens[self.current];
     
-    def previous(self):
-        return self.tokens[self.current - 1];
+    def previous(self, number = 1):
+        return self.tokens[self.current - number];
     
     def consume(self, type, message):
         if self.check(type):

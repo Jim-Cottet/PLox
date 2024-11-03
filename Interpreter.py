@@ -21,12 +21,13 @@ class Interpreter:
             return None
         
         method_name = f"visit_{node.type.name.lower()}";
+        print(f"Method Name : {method_name}");
         method = getattr(self, method_name, self.generic_visit);
         
         return method(node);
     
     def generic_visit(self, node):
-        raise Exception(f"No visit_{node.type.lower()} method")
+        raise Exception(f"No visit_{node.type.name.lower()} method")
     
     # Simply return the value of a node    
     def visit_expr_literal(self, node):
@@ -86,10 +87,7 @@ class Interpreter:
             return left == right;
         return None;
     
-    def visit_expr_assign(self, node):
-        value = self.evaluate(node.value);
-        self.environment.assign(node.name, value);
-        return value;
+
     
     # Execution methods
     def execution(self, stmt):
@@ -116,9 +114,14 @@ class Interpreter:
         self.environment.define(stmt.name, value);
         return None;
     
-    def visit_stmt_expression(self, stmt):
-        return self.evaluate(stmt.expr);
-    
+    def visit_stmt_identifier(self, stmt):
+        # For now we can't handle an expression into a variable
+        value = stmt.expr.value;
+        name = stmt.expr.name;
+        print(f"Assigning {stmt.expr.value} with value {value}");
+        self.environment.assign(name, value);
+        return value;           
+
     # Helper methods
     def is_truthy(self, value):
         if value == None:

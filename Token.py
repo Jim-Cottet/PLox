@@ -3,3 +3,4 @@ class Token:
         self.type = type
         self.value = value
         self.line = line
+        
