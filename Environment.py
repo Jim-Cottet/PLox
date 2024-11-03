@@ -12,3 +12,11 @@ class Environment:
             return self.values[name];
         raise Exception(f"Undefined variable '{name}'.");
   
+    def assign(self, name, value):
+        if name in self.values:
+            self.values[name] = value;
+            return;
+        
+        raise Exception(f"Undefined variable '{name}'.");
+    
+    

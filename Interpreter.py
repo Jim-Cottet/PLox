@@ -86,6 +86,11 @@ class Interpreter:
             return left == right;
         return None;
     
+    def visit_expr_assign(self, node):
+        value = self.evaluate(node.value);
+        self.environment.assign(node.name, value);
+        return value;
+    
     # Execution methods
     def execution(self, stmt):
         if stmt == None:

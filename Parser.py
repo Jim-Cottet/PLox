@@ -69,7 +69,23 @@ class Parser:
     
     # Expression handling block   
     def expression(self):
-        return self.equality();
+        return self.assignment();
+    
+    
+    def assignment(self):
+        expr = self.equality();
+        if (self.match(TokenType.EQUAL)):
+            print("Assignment operator found");
+            equals = self.previous();
+            value = self.assignment();
+        
+            if (equals.type == TypeDef.EXPR_VARIABLE):
+                print("Assignment target is an identifier");
+                return Expr().assign(equals.name, value);
+            
+            print("Error : Invalid assignment target.");
+
+        return expr; 
     
     def equality(self):
         expr = self.comparison();
@@ -144,7 +160,7 @@ class Parser:
         raise Exception("Invalid Expression {} at line {}".format(self.peek().value, self.peek().line));
     
     # Utility Functions
-    def match (self, *types):
+    def match (self, types):
         for type in types:
             if self.check(type):
                 self.advance();
@@ -201,28 +217,6 @@ class Parser:
             
             self.advance();
     
-    ## Printing the AST
-    #def print_ast(self, node, indent=""):
-    #    if node.type == TypeDef.EXPR_BINARY:
-    #        print(f"{indent}Binary:")
-    #        print(f"{indent}  Operator: {node.operator.type}")
-    #        print(f"{indent}  Left:")
-    #        self.print_ast(node.left, indent + "    ")
-    #        print(f"{indent}  Right:")
-    #        self.print_ast(node.right, indent + "    ")
-    #    elif node.type == TypeDef.EXPR_LITERAL:
-    #        print(f"{indent}Literal: {node.value}")
-    #    elif node.type == TypeDef.EXPR_UNARY:
-    #        print(f"{indent}Unary:")
-    #        print(f"{indent}  Operator: {node.operator.type}")
-    #        print(f"{indent}  Right:")
-    #        self.print_ast(node.right, indent + "    ")
-    #    elif node.type == TypeDef.EXPR_GROUPING:
-    #        print(f"{indent}Grouping:")
-    #        print(f"{indent}  Expression:")
-    #        self.print_ast(node.expression, indent + "    ")
-    #    else:
-    #        print(f"{indent}Unknown node type: {node.type}")
         
         
         

@@ -1,5 +1,4 @@
 from TypeDef import TypeDef
-
 class Expr:
     
     def __init__(self) -> None:
@@ -37,3 +36,10 @@ class Expr:
         self.type = TypeDef.EXPR_VARIABLE;
         self.name = name;
         return self;
+    
+    def assign(self, name, value) :
+        self.type = TypeDef.EXPR_ASSIGN;
+        self.name = name;
+        self.value = value;
+        return self;
+   
